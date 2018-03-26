@@ -1,8 +1,8 @@
 {
   "name": "stride",
   "productName": "stride",
-  "version": "1.0.0",
-  "description": "Get work done. Take it all in Stride.",
+  "version": "0.1.0",
+  "description": "Get work done. Taking it all in Stride.",
   "main": "src/index.ts",
   "scripts": {
     "start": "electron-forge start",
