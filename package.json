@@ -30,7 +30,7 @@
       },
       "electronPackagerConfig": {
         "packageManager": "yarn",
-        "name": "Wharf"
+        "name": "Stride"
       },
       "electronWinstallerConfig": {
         "name": "Stride"
