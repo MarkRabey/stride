@@ -2,14 +2,14 @@
   "name": "stride",
   "productName": "stride",
   "version": "1.0.0",
-  "description": "My Electron application description",
+  "description": "Get work done. Take it all in Stride.",
   "main": "src/index.ts",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "tslint --project tsconfig.json --type-check --force"
+    "lint": "tslint --project tsconfig.json --force"
   },
   "keywords": [],
   "author": "mark",
@@ -29,20 +29,21 @@
         ]
       },
       "electronPackagerConfig": {
-        "packageManager": "yarn"
+        "packageManager": "yarn",
+        "name": "Wharf"
       },
       "electronWinstallerConfig": {
-        "name": "stride"
+        "name": "Stride"
       },
       "electronInstallerDebian": {},
       "electronInstallerRedhat": {},
       "github_repository": {
-        "owner": "",
-        "name": ""
+        "owner": "markrabey",
+        "name": "stride"
       },
       "windowsStoreConfig": {
         "packageName": "",
-        "name": "stride"
+        "name": "Stride"
       }
     }
   },
@@ -53,12 +54,19 @@
     "electron-compile": "^6.4.2",
     "electron-devtools-installer": "^2.1.0",
     "electron-squirrel-startup": "^1.0.0",
+    "moment": "^2.21.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-hot-loader": "^3.0.0-beta.6",
+    "react-progressbar.js": "^0.2.0",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2",
+    "redux-devtools-extension": "^2.13.2",
+    "redux-logger": "^3.0.6",
     "tslib": "^1.4.0"
   },
   "devDependencies": {
+    "@types/react-redux": "^5.0.15",
     "babel-plugin-transform-async-to-generator": "^6.24.1",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
