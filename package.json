@@ -1,78 +1,135 @@
 {
   "name": "stride",
   "productName": "stride",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Get work done. Taking it all in Stride.",
-  "main": "src/index.ts",
+  "main": "./dist/main.js",
   "scripts": {
-    "start": "electron-forge start",
-    "package": "electron-forge package",
-    "make": "electron-forge make",
-    "publish": "electron-forge publish",
-    "lint": "tslint --project tsconfig.json --force"
+    "build-main": "cross-env NODE_ENV=production webpack --config webpack.main.config.js --mode production",
+    "build-renderer": "cross-env NODE_ENV=production webpack --config webpack.renderer.config.js --mode production",
+    "build": "npm run build-main && npm run build-renderer",
+    "start-renderer-dev": "webpack-dev-server --config webpack.renderer.config.js --hot --progress --mode development",
+    "start-main-dev": "webpack --config webpack.main.config.js --mode development && electron ./dist/main.js",
+    "start-dev": "cross-env START_HOT=1 npm run start-renderer-dev",
+    "prestart": "npm run build",
+    "start": "electron .",
+    "lint": "tslint '{src,test,mocks}/**/*.{ts,tsx}' --project ./tsconfig.json",
+    "precommit": "lint-staged",
+    "test": "jest '(\\/test\\/(?!e2e/)).*'",
+    "pretest:e2e": "npm run build",
+    "test:e2e": "jest '(\\/test\\/e2e/).*'",
+    "pack": "npm run build && electron-builder --dir",
+    "dist": "npm run build && electron-builder",
+    "postinstall": "electron-builder install-app-deps"
   },
-  "keywords": [],
-  "author": "mark",
-  "license": "MIT",
-  "config": {
-    "forge": {
-      "make_targets": {
-        "win32": [
-          "squirrel"
-        ],
-        "darwin": [
-          "zip"
-        ],
-        "linux": [
-          "deb",
-          "rpm"
-        ]
-      },
-      "electronPackagerConfig": {
-        "packageManager": "yarn",
-        "name": "Stride"
-      },
-      "electronWinstallerConfig": {
-        "name": "Stride"
-      },
-      "electronInstallerDebian": {},
-      "electronInstallerRedhat": {},
-      "github_repository": {
-        "owner": "markrabey",
-        "name": "stride"
-      },
-      "windowsStoreConfig": {
-        "packageName": "",
-        "name": "Stride"
-      }
+  "lint-staged": {
+    "{src,test,mocks}/**/*.{js,ts,tsx,json,css,scss,md}": [
+      "prettier --config ./.prettierrc --write",
+      "git add"
+    ],
+    "{src,test,mocks}/**/*.{js,ts,tsx}": [
+      "tslint --project ./tsconfig.json --fix",
+      "git add"
+    ]
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "ts-jest"
+    },
+    "testRegex": "(/test/.+\\.spec)\\.tsx?$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "json",
+      "node"
+    ],
+    "moduleNameMapper": {
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/mocks/fileMock.js",
+      "\\.(s?css|sass)$": "<rootDir>/mocks/styleMock.js"
     }
   },
-  "dependencies": {
-    "@types/electron-devtools-installer": "^2.0.2",
-    "@types/react": "^0.14.55",
-    "@types/react-dom": "^0.14.20",
-    "electron-compile": "^6.4.2",
-    "electron-devtools-installer": "^2.1.0",
-    "electron-squirrel-startup": "^1.0.0",
-    "moment": "^2.21.0",
-    "react": "^15.4.1",
-    "react-dom": "^15.4.1",
-    "react-hot-loader": "^3.0.0-beta.6",
-    "react-progressbar.js": "^0.2.0",
-    "react-redux": "^5.0.7",
-    "redux": "^3.7.2",
-    "redux-devtools-extension": "^2.13.2",
-    "redux-logger": "^3.0.6",
-    "tslib": "^1.4.0"
+  "build": {
+    "productName": "Stride",
+    "appId": "com.markrabey.stride",
+    "mac": {
+      "category": "your.app.category.type"
+    },
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/",
+      "node_modules/",
+      "package.json"
+    ],
+    "linux": {
+      "target": "deb"
+    },
+    "win": {
+      "target": "nsis"
+    }
   },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:MarkRabey/stride.git"
+  },
+  "author": {
+    "name": "Mark Rabey",
+    "email": "mark@markrabey.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/MarkRabey/stride/issues"
+  },
+  "homepage": "https://github.com/MarkRabey/stride",
   "devDependencies": {
+    "@types/electron-devtools-installer": "^2.0.2",
+    "@types/jest": "^22.2.2",
+    "@types/react": "^16.1.0",
+    "@types/react-dom": "^16.0.4",
+    "@types/react-hot-loader": "^3.0.6",
     "@types/react-redux": "^5.0.15",
-    "babel-plugin-transform-async-to-generator": "^6.24.1",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-react": "^6.24.1",
-    "electron-forge": "^5.1.1",
-    "electron-prebuilt-compile": "1.8.4",
-    "tslint": "^5.1.0",
-    "typescript": "~2.2.2"
+    "@types/react-test-renderer": "^16.0.1",
+    "@types/webdriverio": "^4.10.1",
+    "@types/webpack-env": "^1.13.5",
+    "babel-loader": "^7.1.4",
+    "cross-env": "^5.1.4",
+    "css-loader": "^0.28.11",
+    "electron": "^1.8.4",
+    "electron-builder": "^20.8.1",
+    "electron-devtools-installer": "^2.2.3",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.1.0",
+    "husky": "^0.14.3",
+    "image-webpack-loader": "^4.2.0",
+    "jest": "^22.4.3",
+    "lint-staged": "^7.0.0",
+    "node-sass": "^4.8.3",
+    "prettier": "^1.11.1",
+    "react-hot-loader": "^4.0.0",
+    "react-test-renderer": "^16.2.0",
+    "redux-devtools-extension": "^2.13.2",
+    "sass-loader": "^6.0.7",
+    "source-map-loader": "^0.2.3",
+    "spectron": "^3.8.0",
+    "style-loader": "^0.20.3",
+    "ts-jest": "^22.4.2",
+    "ts-loader": "^4.1.0",
+    "tslint": "^5.9.1",
+    "tslint-config-airbnb": "^5.8.0",
+    "tslint-config-prettier": "^1.10.0",
+    "tslint-react": "^3.5.1",
+    "typescript": "^2.8.1",
+    "webpack": "^4.3.0",
+    "webpack-cli": "^2.0.13",
+    "webpack-dev-server": "^3.1.1",
+    "webpack-merge": "^4.1.2"
+  },
+  "dependencies": {
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-redux": "^5.0.7",
+    "redux": "^3.7.2"
   }
 }
