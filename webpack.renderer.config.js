@@ -40,6 +40,17 @@ module.exports = (env, options) => {
           loaders: ['style-loader', 'css-loader']
         },
         {
+          test: /\.(eot|svg|ttf|woff|woff2)$/,
+          use: [
+            {
+              loader: 'file-loader',
+              options: {
+                name: '/fonts/[name].[ext]',
+              }
+            }
+          ],
+        },
+        {
           test: /\.(gif|png|jpe?g|svg)$/,
           use: [
             'file-loader',
@@ -60,7 +71,7 @@ module.exports = (env, options) => {
       ]
     },
     plugins: [
-      new HtmlWebpackPlugin(),
+      new HtmlWebpackPlugin({ title: 'Stride' }),
       new webpack.NamedModulesPlugin(),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
@@ -72,8 +83,7 @@ module.exports = (env, options) => {
     config.devServer = {
       port: 2003,
       compress: true,
-      noInfo: true,
-      stats: 'errors-only',
+      noInfo: false,
       inline: true,
       hot: true,
       headers: { 'Access-Control-Allow-Origin': '*' },
